@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:common="http://RegeneronNamespace.com/CommonTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNameSpace="Connection"
+  elementFormDefault="qualified">
+  
+  <xs:import schemaLocation="CommonTypes.xsd"
+    namespace="http://RegeneronNamespace.com/CommonTypes"/>
+
+  <xs:complexType name="Connections">
+    <xs:sequence>
+      <xs:element name="connection" type="common:connection"/>
+      <xs:element name="tableName" type="xs:string"/>
+      <xs:element name="columnName" type="xs:string"/>
+      <xs:element name="dataType" type="common:type"/>
+      <xs:element name="etlNotes" type="xs:documentation"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

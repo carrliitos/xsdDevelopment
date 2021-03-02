@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:common="http://RegeneronNamespace.com/CommonTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNameSpace="TargetTable"
+  elementFormDefault="qualified">
+
+  <xs:import schemaLocation="CommonTypes.xsd"
+    namespace="http://RegeneronNamespace.com/CommonTypes"/>
+
+  <xs:complexType name="TargetTable">
+    <xs:sequence> 
+      <xs:element name="columnName" type="xs:string"/>
+      <xs:element name="displayName" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="dataType" type="common:type"/>
+      <xs:element name="dataSize" type="common:size"/>
+      <xs:element name="dataPrecision" type="common:precision"/>
+      <xs:element name="primaryKey" type="xs:boolean" nillable="true"/>
+      <xs:element name="foreignKeyTable" type="xs:string"/>
+      <xs:element name="nullable" type="xs:boolean"/>
+      <xs:element name="defaultValue" type="xs:string"/>
+      <xs:element name="scdType" type="common:scd">
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

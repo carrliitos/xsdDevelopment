@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:common="http://RegeneronNamespace.com/CommonTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNameSpace="Clarity"
+  elementFormDefault="qualified">
+  
+  <xs:import schemaLocation="CommonTypes.xsd"
+    namespace="http://RegeneronNamespace.com/CommonTypes"/>
+  
+  <xs:complexType name="Clarity">
+    <xs:sequence>
+      <xs:element name="connection" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="databaseType" type="common:databaseType"/>
+      <xs:element name="clarityTables" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="clarityTable">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="tableName" type="xs:string"/>
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="primaryKeys">
+                        <xs:element name="primaryKey" type="xs:string"/>
+                        <xs:attribute name="usedForChangeDataCapture" type="xs:boolean"/>
+                      </xs:element>
+                      <xs:element name="patientSelectSqlFragment" type="xs:string"/>
+                      <xs:element name="patientJoinSqlFragment" type="xs:string"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

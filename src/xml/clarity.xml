@@ -1,0 +1,28 @@
+<connections>
+	<connection>
+		<name>Clarity</name>
+		<description />
+		<databaseType>Microsoft SQL Server</databaseType>
+		<connectionTables>
+			<connectionTable>
+				<name>PAT_ENC_DX</name>
+				<primaryKeys>
+					<primaryKey>PAT_ENC_CSN_ID</primaryKey>
+					<primaryKey usedForChangeDataCapture="false">LINE</primaryKey>
+				</primaryKeys>
+				<patientSelectSqlFragment>PAT_ENC_DX.PAT_ID</patientSelectSqlFragment>
+				<patientJoinSqlFragment />
+			</connectionTable>
+			<connectionTable>
+				<name>ORDER_RESULTS</name>
+				<primaryKeys>
+					<primaryKey>ORDER_PROC_ID</primaryKey>
+					<primaryKey>ORD_DATE_REAL</primaryKey>
+					<primaryKey usedForChangeDataCapture="false">LINE</primaryKey>
+				</primaryKeys>
+				<patientSelectSqlFragment>ORDER_PROC.PAT_ID</patientSelectSqlFragment>
+				<patientJoinSqlFragment>INNER JOIN ORDER_PROC ON ORDER_RESULTS.ORDER_PROC_ID = ORDER_PROC.ORDER_PROC_ID</patientJoinSqlFragment>
+			</connectionTable>
+		</connectionTables>
+	</connection>
+</connections>

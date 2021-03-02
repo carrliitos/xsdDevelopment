@@ -1,0 +1,98 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="tables" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  
+  <xs:element name="dataType">
+    <xs:complexType>
+      <xs:attribute name="type" type="xs:string" />
+      <xs:attribute name="size" type="xs:string" />
+    </xs:complexType> 
+  </xs:element>
+  
+  <xs:element name="tables" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="dataType" />
+        <xs:element name="table">
+          <xs:complexType>
+            <xs:sequence>
+              
+              <xs:element name="name" type="xs:string" minOccurs="0" />
+              <xs:element name="type" type="xs:string" minOccurs="0" />
+              <xs:element name="displayName" type="xs:string" minOccurs="0" />
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              
+              <xs:element name="scripts" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="script" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent msdata:ColumnName="script_Text" msdata:Ordinal="2">
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="stage" type="xs:string" />
+                            <xs:attribute name="connection" type="xs:string" />
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              
+              <xs:element name="columns" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="column" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="name" type="xs:string" minOccurs="0" />
+                          <xs:element name="displayName" type="xs:string" minOccurs="0" />
+                          <xs:element name="description" type="xs:string" minOccurs="0" />
+                          <xs:element name="foreignKeyTable" type="xs:string" minOccurs="0" />
+                          <xs:element name="nullable" type="xs:string" minOccurs="0" />
+                          <xs:element name="defaultValue" type="xs:string" minOccurs="0" />
+                          <xs:element name="scdType" type="xs:string" minOccurs="0" />
+                          <xs:element ref="dataType" minOccurs="0" maxOccurs="unbounded" />
+                          <xs:element name="sources" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="source" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="connection" type="xs:string" minOccurs="0" />
+                                      <xs:element name="table" type="xs:string" minOccurs="0" />
+                                      <xs:element name="column" type="xs:string" minOccurs="0" />
+                                      <xs:element name="etlNotes" type="xs:string" minOccurs="0" />
+                                      <xs:element ref="dataType" minOccurs="0" maxOccurs="unbounded" />
+                                      <xs:element name="identifiers" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="identifier" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                              <xs:complexType>
+                                                <xs:simpleContent msdata:ColumnName="identifier_Text" msdata:Ordinal="0">
+                                                  <xs:extension base="xs:string">
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

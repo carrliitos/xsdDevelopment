@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNameSpace="CommonTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+  <xs:complexType name="tableType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Fact"/>
+      <xs:enumeration value="Dimension"/>
+    </xs:restriction>
+  </xs:complexType>
+
+  <xs:element name="scripts">
+    <xs:complexType>
+      <xs:element name="script">
+        <xs:attribute name="stage">
+          <xs:simpleType>
+            <xs:enumeration value="Extract"/>
+            <xs:enumeration value="Transform"/>
+            <xs:enumeration value="Load"/>
+          </xs:simpleType>
+        </xs:attribute>
+
+        <xs:attribute name="connection">
+          <xs:simpleType>
+            <xs:enumeration value="Clarity"/>
+            <xs:enumeration value="Derived"/>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:element>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="dataType">
+    <xs:complexType>
+      <xs:attribute name="type">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="NUMBER"/>
+            <xs:enumeration value="VARCHAR"/>
+            <xs:enumeration value="VARCHAR2"/>
+            <xs:enumeration value="DATE"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+
+      <xs:attribute name="size" type="xs:integer"/>
+      <xs:attribute name="precision" type="xs:integer"/>
+    </xs:complexType> 
+  </xs:element>
+
+  <xs:element name="scd">
+    <xs:restriction base="xs:integer">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+    </xs:restriction>
+  </xs:element>
+
+  <xs:element name="databaseType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Microsoft SQL Server"/>
+      <xs:enumeration value="Oracle SQL Server"/>
+    </xs:restriction>
+  </xs:element>
+
+  <xs:element name="connection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Derived"/>
+      <xs:enumeration value="Clarity"/>
+    </xs:restriction>
+  </xs:element>
+
+</xs:schema>
