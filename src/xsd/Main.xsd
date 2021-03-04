@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://NamespaceTest.com/CommonTypes"
+        xmlns:target="http://NamespaceTest.com/TargetTable"
+        targetNamespace="http://NamespaceTest.com/table"
+        elementFormDefault="qualified">
+    <xs:import schemaLocation="CommonTypes.xsd"
+               namespace="http://NamespaceTest.com/CommonTypes"/>
+    <xs:import schemaLocation="TargetTable.xsd"
+               namespace="http://NamespaceTest.com/TargetTable"/>
+
+    <xs:annotation>
+        <xs:documentation xml:lang="en">
+            This main XML Schema Definition pulls all the sub schemas together into a single schema, and defines the
+            main elements of the table.
+        </xs:documentation>
+    </xs:annotation>
+    
+    <xs:element name="table">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tableName" type="xs:string"/>
+                <xs:element name="tableType" type="common:tableType"/>
+                <xs:element name="displayName" type="xs:string"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="scripts" type="common:scripts"/>
+
+                <xs:element name="entities">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="entity" type="target:TargetTable" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="etlNotes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="etlNote" type="xs:string" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

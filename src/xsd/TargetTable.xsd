@@ -1,25 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:common="http://RegeneronNamespace.com/CommonTypes"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNameSpace="TargetTable"
-  elementFormDefault="qualified">
+<xs:schema xmlns:common="http://NamespaceTest.com/CommonTypes"
+           targetNamespace="http://NamespaceTest.com/TargetTable"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:connection="http://NamespaceTest.com/Connections"
+           elementFormDefault="qualified">
+    <xs:import schemaLocation="CommonTypes.xsd"
+               namespace="http://NamespaceTest.com/CommonTypes"/>
+    <xs:import schemaLocation="Connections.xsd"
+               namespace="http://NamespaceTest.com/Connections"/>
 
-  <xs:import schemaLocation="CommonTypes.xsd"
-    namespace="http://RegeneronNamespace.com/CommonTypes"/>
+    <xs:annotation>
+        <xs:documentation xml:lang="en">
+            This XML Schema Definition contains all the definitions for the target table such as:
+                Column Name - The target column name
+                Display Name - The target display name
+                Description - the target description
+                Data type - References CommonTypes.dataType
+                Data size - References CommonTypes.dataSize
+                Data precision - References CommonTypes.dataPrecision
+                Primary Key - A boolean value to determine if this column is a primary key
+                Foreign Key Table - Populated with the reference key's table, if this column is a foreign key
+                Nullable - A boolean value to determine if this column is nullable
+                Default Value - Determines what the default value is
+                SCD - References CommonTypes.scd
+        </xs:documentation>
+    </xs:annotation>
+    
+    <xs:complexType name="TargetTable">
+        <xs:sequence>
+            <xs:element name="columnName" type="xs:string"/>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element ref="common:dataType"/>
+            <xs:element ref="common:dataSize"/>
+            <xs:element ref="common:dataPrecision"/>
+            <xs:element name="primaryKey" type="xs:boolean"/>
+            <xs:element name="foreignKeyTable" type="xs:string" nillable="true"/>
+            <xs:element name="nullable" type="xs:boolean"/>
+            <xs:element name="defaultValue" type="xs:string" nillable="true"/>
+            <xs:element name="scdType" type="common:scd"/>
 
-  <xs:complexType name="TargetTable">
-    <xs:sequence> 
-      <xs:element name="columnName" type="xs:string"/>
-      <xs:element name="displayName" type="xs:string"/>
-      <xs:element name="description" type="xs:string"/>
-      <xs:element name="dataType" type="common:type"/>
-      <xs:element name="dataSize" type="common:size"/>
-      <xs:element name="dataPrecision" type="common:precision"/>
-      <xs:element name="primaryKey" type="xs:boolean" nillable="true"/>
-      <xs:element name="foreignKeyTable" type="xs:string"/>
-      <xs:element name="nullable" type="xs:boolean"/>
-      <xs:element name="defaultValue" type="xs:string"/>
-      <xs:element name="scdType" type="common:scd">
-    </xs:sequence>
-  </xs:complexType>
+            <xs:element name="sources" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="source" type="connection:Connections" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
 </xs:schema>
