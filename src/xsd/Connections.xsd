@@ -1,19 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:common="http://RegeneronNamespace.com/CommonTypes"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNameSpace="Connection"
-  elementFormDefault="qualified">
-  
-  <xs:import schemaLocation="CommonTypes.xsd"
-    namespace="http://RegeneronNamespace.com/CommonTypes"/>
+<xs:schema xmlns:common="http://NamespaceTest.com/CommonTypes"
+           targetNamespace="http://NamespaceTest.com/Connections"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    <xs:import schemaLocation="CommonTypes.xsd"
+               namespace="http://NamespaceTest.com/CommonTypes"/>
 
-  <xs:complexType name="Connections">
-    <xs:sequence>
-      <xs:element name="connection" type="common:connection"/>
-      <xs:element name="tableName" type="xs:string"/>
-      <xs:element name="columnName" type="xs:string"/>
-      <xs:element name="dataType" type="common:type"/>
-      <xs:element name="etlNotes" type="xs:documentation"/>
-    </xs:sequence>
-  </xs:complexType>
+    <xs:annotation>
+        <xs:documentation xml:lang="en">
+            This XML Schema Definition contains all the definitions for the source table connection such as:
+                Database Type - References CommonTypes.databaseType
+                Table Name - The source table name
+                Primary Keys - The primary keys used from this table
+                Identifier - The INI and Item #
+                Patient Select SQL Fragment
+                Patient Join SQL Fragment
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="Connections">
+        <xs:sequence>
+            <xs:element ref="common:databaseType"/>
+            <xs:element name="tableName" type="xs:string"/>
+
+            <xs:element name="primaryKeys" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="primaryKey" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="usedForChangeDataCapture">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="true"/>
+                                                    <xs:enumeration value="false"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="identifier" type="xs:string" nillable="true"/>
+            <xs:element name="patientSelectSqlFragment" type="xs:string"/>
+            <xs:element name="patientJoinSqlFragment" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
