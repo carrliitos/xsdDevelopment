@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://NamespaceTest.com/table Main.xsd"
+       xmlns="http://NamespaceTest.com/table"
+       xmlns:target="http://NamespaceTest.com/TargetTable"
+       xmlns:conn="http://NamespaceTest.com/Connections"
+       xmlns:common="http://NamespaceTest.com/CommonTypes">
+
+    <tableName>DIAGNOSIS_EVENT_FACT</tableName>
+    <tableType>Fact</tableType>
+    <displayName>Diagnosis Event Fact</displayName>
+    <description>
+        The diagnosis event fact contains information about diagnoses attributed to patients.
+    </description>
+    <scripts>
+        <common:script stage="Extract" connection="Clarity">
+            <![CDATA[
+                SELECT
+                    PAT_ENC_DX.PAT_ENC_CSN_ID,
+                    PAT_ENC_DX.LINE,
+                    PAT_ENC_DX.PAT_ID,
+                    PAT_ENC_DX.DX_ID,
+                    PAT_ENC_DX.DX_CHRONIC_YN,
+                    PAT_ENC_DX.DX_ED_YN,
+                    PAT_ENC_DX.PRIMARY_DX_YN,
+                    PAT_ENC.EFFECTIVE_DATE_DTTM,
+                    PAT_ENC.ENC_TYPE_C,
+                    PAT_ENC_HSP.ED_DEPARTURE_TIME,
+                    PAT_ENC_HSP.ED_EPISODE_ID,
+                    PAT_ENC_HSP.HOSP_DISCH_TIME,
+                    PAT_ENC_HSP.INP_ADM_DATE
+                FROM PAT_ENC_DX
+                    LEFT OUTER JOIN PAT_ENC ON PAT_ENC_DX.PAT_ENC_CSN_ID = PAT_ENC.PAT_ENC_CSN_ID
+                    LEFT OUTER JOIN PAT_ENC_HSP ON PAT_ENC_DX.PAT_ENC_CSN_ID = PAT_ENC_HSP.PAT_ENC_CSN_ID
+                WHERE PAT_ENC_DX.PAT_ENC_CSN_ID IN (
+                        SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC_DX UNION
+                        SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC UNION
+                        SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC_HSP
+                    )
+            ]]>
+        </common:script>
+    </scripts>
+    <entities>
+        <entity>
+            <target:columnName>DIAGNOSIS_EVENT_KEY</target:columnName>
+            <target:displayName>Diagnosis event key</target:displayName>
+            <target:description>Diagnosis event key.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>true</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>DIAGNOSIS_KEY</target:columnName>
+            <target:displayName>Diagnosis key</target:displayName>
+            <target:description>Diagnosis key.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable>DIAGNOSIS_DIM</target:foreignKeyTable>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>PATIENT_KEY</target:columnName>
+            <target:displayName>Patient key</target:displayName>
+            <target:description>Patient key.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable>PATIENT_DIM</target:foreignKeyTable>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>ENCOUNTER_KEY</target:columnName>
+            <target:displayName>Encounter key</target:displayName>
+            <target:description>Encounter key.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable>ENCOUNTER_FACT</target:foreignKeyTable>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>EPIC_PAT_ENC_CSN_ID</target:columnName>
+            <target:displayName>Epic encounter identifier</target:displayName>
+            <target:description>Epic ID for the encounter identifier.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>18</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>PAT_ENC_CSN_ID</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 8</conn:identifier>
+                    <conn:patientSelectSqlFragment>PAT_ENC_DX.PAT_ID</conn:patientSelectSqlFragment>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>EPIC_LINE</target:columnName>
+            <target:displayName>Epic diagnosis line number</target:displayName>
+            <target:description>Epic ID for the diagnosis line identifier.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey usedForChangeDataCapture="false">LINE</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier/>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>EPIC_DX_ID</target:columnName>
+            <target:displayName>Epic diagnosis ID</target:displayName>
+            <target:description>Epic ID for the diagnosis identifier.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>18</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>DX_ID</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 18400</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>EPIC_PAT_ID</target:columnName>
+            <target:displayName>Epic patient ID</target:displayName>
+            <target:description>Epic ID for the patient identifier</target:description>
+            <common:dataType>VARCHAR2</common:dataType>
+            <common:dataSize>18</common:dataSize>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>PAT_ID</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT .1</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>EVENT_START_AT</target:columnName>
+            <target:displayName>Event start date</target:displayName>
+            <target:description>Event start date.</target:description>
+            <common:dataType>DATE</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>EFFECTIVE_DATE_DTTM</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 87314  EPT 87317</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>EVENT_END_AT</target:columnName>
+            <target:displayName>Event end date</target:displayName>
+            <target:description>Event end date.</target:description>
+            <common:dataType>DATE</common:dataType>
+            <common:dataSize/>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>true</target:nullable>
+            <target:defaultValue/>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>EFFECTIVE_DATE_DTTM></conn:primaryKey>
+                        <conn:primaryKey>ENC_TYPE_C</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>
+                        EPT 87314   EPT 87317
+                        EPT 30
+                    </conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_HSP</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>ED_DEPARTURE_TIME</conn:primaryKey>
+                        <conn:primaryKey>ED_EPISODE_ID</conn:primaryKey>
+                        <conn:primaryKey>HOSP_DISCH_TIME</conn:primaryKey>
+                        <conn:primaryKey>INP_ADM_DATE</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>
+                        EPT 49020   EPT 49025
+                        EPT 1953    (HSB .1)
+                        EPT 18855   EPT 18856
+                        EPT 10290   EPT 10291
+                    </conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>TYPE</target:columnName>
+            <target:displayName>Event type</target:displayName>
+            <target:description>Event type.</target:description>
+            <common:dataType>VARCHAR2</common:dataType>
+            <common:dataSize>350</common:dataSize>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue>*Encounter Diagnosis</target:defaultValue>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>PRESENT_ON_ADMISSION</target:columnName>
+            <target:displayName>Present on admission</target:displayName>
+            <target:description>Diagnosis present on admission.</target:description>
+            <common:dataType>VARCHAR2</common:dataType>
+            <common:dataSize>300</common:dataSize>
+            <common:dataPrecision/>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue>*Not Applicable</target:defaultValue>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>HOSPITAL_DIAGNOSIS_IND</target:columnName>
+            <target:displayName>Hospital diagnosis indicator</target:displayName>
+            <target:description>
+                Indicator to represent a diagnosis during a hospitalization
+            </target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>1</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>false</target:nullable>
+            <target:defaultValue>NULL</target:defaultValue>
+            <target:scdType>1</target:scdType>
+        </entity>
+        <entity>
+            <target:columnName>EMERGENCY_DEPARTMENT_IND</target:columnName>
+            <target:displayName>Emergency department diagnosis indicator</target:displayName>
+            <target:description>
+                Indicator to represent a diagnosis during an emergency department visit
+            </target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>1</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>true</target:nullable>
+            <target:defaultValue>NULL</target:defaultValue>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>DX_ED_YN</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 18465</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>CHRONIC_IND</target:columnName>
+            <target:displayName>Chronic diagnosis indicator</target:displayName>
+            <target:description>Chronic indicator.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>1</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>true</target:nullable>
+            <target:defaultValue>NULL</target:defaultValue>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>DX_CHRONIC_YN</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 18460</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+        <entity>
+            <target:columnName>PRIMARY_IND</target:columnName>
+            <target:displayName>Primary diagnosis indicator</target:displayName>
+            <target:description>Primary diagnosis indicator.</target:description>
+            <common:dataType>NUMBER</common:dataType>
+            <common:dataSize>1</common:dataSize>
+            <common:dataPrecision>0</common:dataPrecision>
+            <target:primaryKey>false</target:primaryKey>
+            <target:foreignKeyTable/>
+            <target:nullable>true</target:nullable>
+            <target:defaultValue>NULL</target:defaultValue>
+            <target:scdType>1</target:scdType>
+            <target:sources>
+                <target:source>
+                    <common:databaseType>Microsoft SQL Server</common:databaseType>
+                    <conn:tableName>PAT_ENC_DX</conn:tableName>
+                    <conn:primaryKeys>
+                        <conn:primaryKey>PRIMARY_DX_YN</conn:primaryKey>
+                    </conn:primaryKeys>
+                    <conn:identifier>EPT 18418</conn:identifier>
+                    <conn:patientSelectSqlFragment/>
+                    <conn:patientJoinSqlFragment/>
+                </target:source>
+            </target:sources>
+        </entity>
+    </entities>
+    <etlNotes>
+        <etlNote><![CDATA[
+            If ENC_TYPE_C <> 3 - Hospital Encounter then EFFECTIVE_DATE_DTTM
+            Otherwise if INP_ADM_DATE is not NULL then HOSP_DISCH_TIME
+            Otherwise if ED_EPISODE_ID is not NULL then
+              If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+              Otherwise ED_DEPARTURE_TIME
+            Otherwise
+              If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+              Otherwise EFFECTIVE_DATE_DTTM
+        ]]>
+        </etlNote>
+        <etlNote>
+            <![CDATA[
+                If DX_ED_YN is Y then 1
+                Otherwise if DX_ED_YN is N then 0
+                Otherwise NULL
+            ]]>
+        </etlNote>
+        <etlNote>
+            <![CDATA[
+                If DX_CHRONIC_YN = Y then 1
+				Otherwise if DX_CHRONIC_YN is N then 0
+				Otherwise NULL
+            ]]>
+        </etlNote>
+        <etlNote>
+            <![CDATA[
+                If PRIMARY_DX_YN is Y then 1
+				Otherwise if PRIMARY_DX_YN is N then 0
+				Otherwise NULL
+            ]]>
+        </etlNote>
+    </etlNotes>
+</table>
