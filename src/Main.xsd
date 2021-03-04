@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
-           targetNamespace="https://www.w3schools.com">
+           targetNamespace="https://www.w3schools.com"
+           xmlns:r="https://www.w3schools.com">
 
   <xs:element name="table">
     <xs:annotation>
@@ -13,15 +14,15 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="tableName" type="xs:string"/>
-        <xs:element name="tableType" type="tableType"/>
+        <xs:element name="tableType" type="r:tableType"/>
         <xs:element name="displayName" type="xs:string"/>
         <xs:element name="description" type="xs:string"/>
-        <xs:element name="scripts" type="scripts"/>
+        <xs:element name="scripts" type="r:scripts"/>
 
         <xs:element name="entities">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="entity" type="TargetTable" maxOccurs="unbounded"/>
+              <xs:element name="entity" type="r:TargetTable" maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -164,7 +165,7 @@
       </xs:element>
       <xs:element name="tableName" type="xs:string"/>
       <xs:element name="column" maxOccurs="unbounded"/>
-      <xs:element ref="dataType" maxOccurs="unbounded"/>
+      <xs:element ref="r:dataType" maxOccurs="unbounded"/>
       <xs:element name="identifiers" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -186,17 +187,17 @@
       <xs:element name="columnName" type="xs:string"/>
       <xs:element name="displayName" type="xs:string"/>
       <xs:element name="description" type="xs:string"/>
-      <xs:element ref="dataType" maxOccurs="unbounded"/>
+      <xs:element ref="r:dataType" maxOccurs="unbounded"/>
       <xs:element name="primaryKey" type="xs:boolean"/>
       <xs:element name="foreignKeyTable" type="xs:string" nillable="true"/>
       <xs:element name="nullable" type="xs:boolean"/>
       <xs:element name="defaultValue" type="xs:string" nillable="true"/>
-      <xs:element name="scdType" type="scd"/>
+      <xs:element name="scdType" type="r:scd"/>
 
       <xs:element name="sources" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="source" type="connections" maxOccurs="unbounded"/>
+            <xs:element name="source" type="r:connections" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

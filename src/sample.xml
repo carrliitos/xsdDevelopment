@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns="https://www.w3schools.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://www.w3schools.com Main.xsd">
+
+	<tableName>SAMPLE_TABLE</tableName>
+	<tableType>Fact</tableType>
+	<displayName>Sample table for you</displayName>
+	<description>This is a sample table for whoever wants to see it!</description>
+	<scripts>
+		<script stage="Extract" connection="Clarity">
+			select *
+			from WHATEVER_YOU_WANT;
+		</script>
+	</scripts>
+	<entities>
+		<entity>
+			<columnName>SAMPLE_KEY</columnName>
+			<displayName>Sample event key</displayName>
+			<description>Sample event key.</description>
+			<dataType>
+				<type>NUMBER</type>
+				<size>100</size>
+				<precision>2</precision>
+			</dataType>
+			<primaryKey>true</primaryKey>
+			<foreignKeyTable/>
+			<nullable>false</nullable>
+			<defaultValue/>
+			<scdType>1</scdType>
+			<sources>
+				<source>
+					<connection>Clarity</connection>
+					<tableName>PAT_ENC_DX</tableName>
+					<column>PAT_ENC_CSN_ID</column>
+					<dataType>
+						<type>NUMBER</type>
+						<size/>
+						<precision/>
+					</dataType>
+				</source>
+			</sources>
+		</entity>
+	</entities>
+</table>
