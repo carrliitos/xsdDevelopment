@@ -36,7 +36,7 @@
               SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC UNION
               SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC_HSP
             )
-			]]></script>
+            ]]></script>
       </scripts>
       <columns>
         <column>
@@ -152,15 +152,15 @@
             </source>
           </sources>
           <etlNotes><![CDATA[
-					If ENC_TYPE_C <> 3 - Hospital Encounter then EFFECTIVE_DATE_DTTM
-					Otherwise if INP_ADM_DATE is not NULL then HOSP_DISCH_TIME
-					Otherwise if ED_EPISODE_ID is not NULL then
-					  If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
-					  Otherwise ED_DEPARTURE_TIME
-					Otherwise
-					  If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
-					  Otherwise EFFECTIVE_DATE_DTTM
-				]]></etlNotes>
+                    If ENC_TYPE_C <> 3 - Hospital Encounter then EFFECTIVE_DATE_DTTM
+                    Otherwise if INP_ADM_DATE is not NULL then HOSP_DISCH_TIME
+                    Otherwise if ED_EPISODE_ID is not NULL then
+                      If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+                      Otherwise ED_DEPARTURE_TIME
+                    Otherwise
+                      If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+                      Otherwise EFFECTIVE_DATE_DTTM
+                ]]></etlNotes>
         </column>
         <column>
           <name>CHRONIC_ID</name>
@@ -179,10 +179,10 @@
             </source>
           </sources>
           <etlNotes><![CDATA[
-					If DX_CHRONIC_YN = Y then 1
-					Otherwise if DX_CHRONIC_YN is N then 0
-					Otherwise NULL
-				]]></etlNotes>
+                    If DX_CHRONIC_YN = Y then 1
+                    Otherwise if DX_CHRONIC_YN is N then 0
+                    Otherwise NULL
+                ]]></etlNotes>
         </column>
         <column>
           <name>PRIMARY_IND</name>
@@ -201,10 +201,10 @@
             </source>
           </sources>
           <etlNotes><![CDATA[
-					If PRIMARY_DX_YN is Y then 1
-					Otherwise if PRIMARY_DX_YN is N then 0
-					Otherwise NULL
-				]]></etlNotes>
+                    If PRIMARY_DX_YN is Y then 1
+                    Otherwise if PRIMARY_DX_YN is N then 0
+                    Otherwise NULL
+                ]]></etlNotes>
         </column>
       </columns>
     </table>

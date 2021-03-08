@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 public class Validate {
 	public static void main(String[] args) {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		File xmlFile = new File("xml/POC_DIAGNOSIS_EVENT_FACT.xml");
+		File xmlFile = new File("sample.xml");
 		File xsdFile = new File("Main.xsd");
 
 		try {
@@ -34,11 +34,14 @@ public class Validate {
 
 			System.out.println(xmlFile + " validates");
 		} catch (SAXException sax) {
-			System.out.println("SAX Error: " + sax.getMessage());
+			System.out.println("SAX Error: ");
+			System.out.println(sax.getMessage());
 		} catch (ParserConfigurationException parser) {
-			System.out.println("Parser Config Error: " + parser.getMessage());
+			System.out.println("Parser Config Error: ");
+			System.out.println(parser.getMessage());
 		} catch (IOException io) {
-			System.out.println("IO Error " + io.getMessage());
+			System.out.println("IO Error ");
+			System.out.println(io.getMessage());
 		}
 	}
 }
