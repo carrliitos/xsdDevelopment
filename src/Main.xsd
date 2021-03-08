@@ -2,54 +2,142 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
            targetNamespace="https://www.w3schools.com"
-           xmlns:r="https://www.w3schools.com">
+           xmlns:r="https://www.w3schools.com" >
+  <!-- https://www.w3schools.com is a placeholder -->
 
-  <xs:element name="table">
+  <xs:element name="aahri">
+    <xs:annotation>
+      <xs:documentation>
+        The main schema structure
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="tables" type="r:tables" minOccurs="0"/>
+        <xs:element name="connections" type="r:Clarity" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="tables">
     <xs:annotation>
       <xs:documentation>
         The main table created in each xml
       </xs:documentation>
     </xs:annotation>
 
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="tableName" type="xs:string"/>
-        <xs:element name="tableType" type="r:tableType"/>
-        <xs:element name="displayName" type="xs:string"/>
-        <xs:element name="description" type="xs:string"/>
-        <xs:element name="scripts" type="r:scripts"/>
+    <xs:sequence>
+      <xs:element name="table">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="scripts" type="r:scripts"/>
+            <xs:element name="columns">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="column" type="r:TargetTable" maxOccurs="unbounded"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
 
-        <xs:element name="entities">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="entity" type="r:TargetTable" maxOccurs="unbounded"/>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+  <xs:complexType name="Clarity">
+    <xs:annotation>
+      <xs:documentation>
+        The Clarity connections schema
+      </xs:documentation>
+    </xs:annotation>
 
-        <xs:element name="etlNotes">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="etlNote" type="xs:string" maxOccurs="unbounded"/>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+    <xs:sequence>
+      <xs:element name="connection" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element ref="r:databaseType"/>
+            <xs:element name="connectionTables">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="connectionTable" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="primaryKeys" type="r:primaryKeys"/>
+                        <xs:element name="patientSelectSqlFragment" type="xs:string" minOccurs="0"/>
+                        <xs:element name="patientJoinSqlFragment" type="xs:string" minOccurs="0"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="primaryKeys">
+    <xs:annotation>
+      <xs:documentation>
+        These are the primary keys used for the Clarity connections
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="primaryKey" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="usedForChangeDataCapture" type="xs:boolean"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TargetTable">
+    <xs:annotation>
+      <xs:documentation>
+        The "target table" corresponds to the target table of our table specifications
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="displayName" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="dataType" type="r:dataType" maxOccurs="unbounded"/>
+      <xs:element name="primaryKey" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="foreignKeyTable" type="xs:string" minOccurs="0"/>
+      <xs:element name="nullable" type="xs:boolean"/>
+      <xs:element name="defaultValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="scdType" type="r:scd"/>
+      <xs:element name="sources" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="source" type="r:connections" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="etlNotes" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:annotation>
     <xs:documentation>
-      Element references for the main table
+      Element references for the TargetTable
     </xs:documentation>
   </xs:annotation>
-
-  <xs:simpleType name="tableType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Fact"/>
-      <xs:enumeration value="Dimension"/>
-    </xs:restriction>
-  </xs:simpleType>
 
   <xs:complexType name="scripts">
     <xs:sequence>
@@ -66,15 +154,7 @@
                   </xs:restriction>
                 </xs:simpleType>
               </xs:attribute>
-
-              <xs:attribute name="connection">
-                <xs:simpleType>
-                  <xs:restriction base="xs:string">
-                    <xs:enumeration value="Clarity"/>
-                    <xs:enumeration value="Derived"/>
-                  </xs:restriction>
-                </xs:simpleType>
-              </xs:attribute>
+              <xs:attribute name="connection" type="xs:string" use="required"/>
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -82,54 +162,11 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:element name="dataType">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="type">
-          <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:enumeration value="NUMBER"/>
-              <xs:enumeration value="VARCHAR"/>
-              <xs:enumeration value="VARCHAR2"/>
-              <xs:enumeration value="DATE"/>
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-
-        <xs:element name="size">
-          <xs:simpleType>
-            <xs:union>
-              <xs:simpleType>
-                <xs:restriction base="xs:string">
-                  <xs:length value="0"/>
-                </xs:restriction>
-              </xs:simpleType>
-
-              <xs:simpleType>
-                <xs:restriction base="xs:integer"/>
-              </xs:simpleType>
-            </xs:union>
-          </xs:simpleType>
-        </xs:element>
-
-        <xs:element name="precision">
-          <xs:simpleType>
-            <xs:union>
-              <xs:simpleType>
-                <xs:restriction base="xs:string">
-                  <xs:length value="0"/>
-                </xs:restriction>
-              </xs:simpleType>
-
-              <xs:simpleType>
-                <xs:restriction base="xs:integer"/>
-              </xs:simpleType>
-            </xs:union>
-          </xs:simpleType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="dataType">
+    <xs:attribute name="type"/>
+    <xs:attribute name="size"/>
+    <xs:attribute name="precision"/>
+  </xs:complexType>
 
   <xs:simpleType name="scd">
     <xs:restriction base="xs:integer">
@@ -150,54 +187,19 @@
   <xs:complexType name="connections">
     <xs:annotation>
       <xs:documentation>
-        The "connections" corresponds to the source tables
+        The connections corresponds to the source tables of the target tables
       </xs:documentation>
     </xs:annotation>
 
     <xs:sequence>
-      <xs:element name="connection">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="Clarity"/>
-            <xs:enumeration value="Derived"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
-      <xs:element name="tableName" type="xs:string"/>
+      <xs:element name="connection" type="xs:string"/>
+      <xs:element name="table" type="xs:string"/>
       <xs:element name="column" maxOccurs="unbounded"/>
-      <xs:element ref="r:dataType" maxOccurs="unbounded"/>
+      <xs:element name="dataType" type="r:dataType" maxOccurs="unbounded"/>
       <xs:element name="identifiers" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="identifier" type="xs:string" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="TargetTable">
-    <xs:annotation>
-      <xs:documentation>
-        The "target table" corresponds to the target table of our table specifications
-      </xs:documentation>
-    </xs:annotation>
-
-    <xs:sequence>
-      <xs:element name="columnName" type="xs:string"/>
-      <xs:element name="displayName" type="xs:string"/>
-      <xs:element name="description" type="xs:string"/>
-      <xs:element ref="r:dataType" maxOccurs="unbounded"/>
-      <xs:element name="primaryKey" type="xs:boolean"/>
-      <xs:element name="foreignKeyTable" type="xs:string" nillable="true"/>
-      <xs:element name="nullable" type="xs:boolean"/>
-      <xs:element name="defaultValue" type="xs:string" nillable="true"/>
-      <xs:element name="scdType" type="r:scd"/>
-
-      <xs:element name="sources" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="source" type="r:connections" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

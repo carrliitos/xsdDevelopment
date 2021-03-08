@@ -1,45 +1,241 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<table xmlns="https://www.w3schools.com"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="https://www.w3schools.com Main.xsd">
+<aahri xmlns="https://www.w3schools.com"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://www.w3schools.com Regeneron.xsd">
+  <!-- https://www.w3schools.com is a placeholder -->
 
-	<tableName>SAMPLE_TABLE</tableName>
-	<tableType>Fact</tableType>
-	<displayName>Sample table for you</displayName>
-	<description>This is a sample table for whoever wants to see it!</description>
-	<scripts>
-		<script stage="Extract" connection="Clarity">
-			select *
-			from WHATEVER_YOU_WANT;
-		</script>
-	</scripts>
-	<entities>
-		<entity>
-			<columnName>SAMPLE_KEY</columnName>
-			<displayName>Sample event key</displayName>
-			<description>Sample event key.</description>
-			<dataType>
-				<type>NUMBER</type>
-				<size>100</size>
-				<precision>2</precision>
-			</dataType>
-			<primaryKey>true</primaryKey>
-			<foreignKeyTable/>
-			<nullable>false</nullable>
-			<defaultValue/>
-			<scdType>1</scdType>
-			<sources>
-				<source>
-					<connection>Clarity</connection>
-					<tableName>PAT_ENC_DX</tableName>
-					<column>PAT_ENC_CSN_ID</column>
-					<dataType>
-						<type>NUMBER</type>
-						<size/>
-						<precision/>
-					</dataType>
-				</source>
-			</sources>
-		</entity>
-	</entities>
-</table>
+  <tables>
+    <table>
+      <name>DIAGNOSIS_EVENT_FACT</name>
+      <type>Fact</type>
+      <displayName>Diagnosis Event Fact</displayName>
+      <description>
+        The diagnosis event fact contains information about diagnoses attributed to patients.
+      </description>
+      <scripts>
+        <script stage="Extract" connection="Clarity"><![CDATA[
+          SELECT
+            PAT_ENC_DX.PAT_ENC_CSN_ID,
+            PAT_ENC_DX.LINE,
+            PAT_ENC_DX.PAT_ID,
+            PAT_ENC_DX.DX_ID,
+            PAT_ENC_DX.DX_CHRONIC_YN,
+            PAT_ENC_DX.DX_ED_YN,
+            PAT_ENC_DX.PRIMARY_DX_YN,
+            PAT_ENC.EFFECTIVE_DATE_DTTM,
+            PAT_ENC.ENC_TYPE_C,
+            PAT_ENC_HSP.ED_DEPARTURE_TIME,
+            PAT_ENC_HSP.ED_EPISODE_ID,
+            PAT_ENC_HSP.HOSP_DISCH_TIME,
+            PAT_ENC_HSP.INP_ADM_DATE
+          FROM PAT_ENC_DX
+            LEFT OUTER JOIN PAT_ENC ON PAT_ENC_DX.PAT_ENC_CSN_ID = PAT_ENC.PAT_ENC_CSN_ID
+            LEFT OUTER JOIN PAT_ENC_HSP ON PAT_ENC_DX.PAT_ENC_CSN_ID = PAT_ENC_HSP.PAT_ENC_CSN_ID
+          WHERE PAT_ENC_DX.PAT_ENC_CSN_ID IN (
+              SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC_DX UNION
+              SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC UNION
+              SELECT PAT_ENC_CSN_ID FROM #CSA_PAT_ENC_HSP
+            )
+			]]></script>
+      </scripts>
+      <columns>
+        <column>
+          <name>DIAGNOSIS_EVENT_KEY</name>
+          <displayName>Diagnosis event key</displayName>
+          <description>Diagnosis event key.</description>
+          <dataType type="NUMBER"/>
+          <primaryKey>true</primaryKey>
+          <nullable>false</nullable>
+          <scdType>1</scdType>
+        </column>
+        <column>
+          <name>EPIC_PAT_ENC_CSN_ID</name>
+          <displayName>Epic encounter identifier</displayName>
+          <description>Epic ID for the encounter identifier.</description>
+          <dataType type="NUMBER"/>
+          <primaryKey>false</primaryKey>
+          <nullable>false</nullable>
+          <scdType>1</scdType>
+          <sources>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_DX</table>
+              <column>PAT_ENC_CSN_ID</column>
+              <dataType type="NUMBER"/>
+            </source>
+          </sources>
+        </column>
+        <column>
+          <name>EPIC_LINE</name>
+          <displayName>Epic diagnosis line number</displayName>
+          <description>Epic ID for the diagnosis line identifier.</description>
+          <dataType type="NUMBER"/>
+          <primaryKey>false</primaryKey>
+          <nullable>false</nullable>
+          <scdType>1</scdType>
+          <sources>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_DX</table>
+              <column>LINE</column>
+              <dataType type="NUMBER"/>
+            </source>
+          </sources>
+        </column>
+        <column>
+          <name>EVENT_END_AT</name>
+          <displayName>Event end date</displayName>
+          <description>Event end date.</description>
+          <dataType type="DATE"/>
+          <primaryKey>false</primaryKey>
+          <nullable>true</nullable>
+          <scdType>1</scdType>
+          <sources>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC</table>
+              <column>EFFECTIVE_DATE_DTTM</column>
+              <dataType type="DATE"/>
+              <identifiers>
+                <identifier>EPT 87314</identifier>
+                <identifier>EPT 87317</identifier>
+              </identifiers>
+            </source>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC</table>
+              <column>ENC_TYPE_C</column>
+              <dataType type="NUMBER"/>
+              <identifiers>
+                <identifier>EPT 30</identifier>
+              </identifiers>
+            </source>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_HSP</table>
+              <column>ED_DEPARTURE_TIME</column>
+              <dataType type="DATE"/>
+              <identifiers>
+                <identifier>EPT 49020</identifier>
+                <identifier>EPT 49025</identifier>
+              </identifiers>
+            </source>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_HSP</table>
+              <column>ED_EPISODE_ID</column>
+              <dataType type="DATE"/>
+              <identifiers>
+                <identifier>EPT 1953</identifier>
+                <identifier>HSB .1</identifier>
+              </identifiers>
+            </source>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_HSP</table>
+              <column>HOSP_DISCH_TIME</column>
+              <dataType type="DATE"/>
+              <identifiers>
+                <identifier>EPT 18855</identifier>
+                <identifier>EPT 18856</identifier>
+              </identifiers>
+            </source>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_HSP</table>
+              <column>INP_ADM_DATE</column>
+              <dataType type="DATE"/>
+              <identifiers>
+                <identifier>EPT 10290</identifier>
+                <identifier>EPT 10291</identifier>
+              </identifiers>
+            </source>
+          </sources>
+          <etlNotes><![CDATA[
+					If ENC_TYPE_C <> 3 - Hospital Encounter then EFFECTIVE_DATE_DTTM
+					Otherwise if INP_ADM_DATE is not NULL then HOSP_DISCH_TIME
+					Otherwise if ED_EPISODE_ID is not NULL then
+					  If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+					  Otherwise ED_DEPARTURE_TIME
+					Otherwise
+					  If HOSP_DISCH_TIME is not NULL then HOSP_DISCH_TIME
+					  Otherwise EFFECTIVE_DATE_DTTM
+				]]></etlNotes>
+        </column>
+        <column>
+          <name>CHRONIC_ID</name>
+          <displayName>Chronic diagnosis indicator</displayName>
+          <description>Chronic indicator.</description>
+          <dataType type="NUMBER" size="1"/>
+          <primaryKey>false</primaryKey>
+          <nullable>true</nullable>
+          <scdType>1</scdType>
+          <sources>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_DX</table>
+              <column>DX_CHRONIC_YN</column>
+              <dataType type="VARCHAR" size="1"/>
+            </source>
+          </sources>
+          <etlNotes><![CDATA[
+					If DX_CHRONIC_YN = Y then 1
+					Otherwise if DX_CHRONIC_YN is N then 0
+					Otherwise NULL
+				]]></etlNotes>
+        </column>
+        <column>
+          <name>PRIMARY_IND</name>
+          <displayName>Primary diagnosis indicator</displayName>
+          <description>Primary diagnosis indicator.</description>
+          <dataType type="NUMBER" size="1"/>
+          <primaryKey>false</primaryKey>
+          <nullable>true</nullable>
+          <scdType>1</scdType>
+          <sources>
+            <source>
+              <connection>Clarity</connection>
+              <table>PAT_ENC_DX</table>
+              <column>PRIMARY_DX_YN</column>
+              <dataType type="VARCHAR" size="1"/>
+            </source>
+          </sources>
+          <etlNotes><![CDATA[
+					If PRIMARY_DX_YN is Y then 1
+					Otherwise if PRIMARY_DX_YN is N then 0
+					Otherwise NULL
+				]]></etlNotes>
+        </column>
+      </columns>
+    </table>
+  </tables>
+
+  <connections>
+    <connection>
+      <name>Clarity</name>
+      <databaseType>Microsoft SQL Server</databaseType>
+      <connectionTables>
+        <connectionTable>
+          <name>PAT_ENC_DX</name>
+          <primaryKeys>
+            <primaryKey>PAT_ENC_CSN_ID</primaryKey>
+            <primaryKey usedForChangeDataCapture="false">LINE</primaryKey>
+          </primaryKeys>
+          <patientSelectSqlFragment>PAT_ENC_DX.PAT_ID</patientSelectSqlFragment>
+        </connectionTable>
+        <connectionTable>
+          <name>ORDER_RESULTS</name>
+          <primaryKeys>
+            <primaryKey>ORDER_PROC_ID</primaryKey>
+            <primaryKey>ORD_DATE_REAL</primaryKey>
+            <primaryKey usedForChangeDataCapture="false">LINE</primaryKey>
+          </primaryKeys>
+          <patientSelectSqlFragment>ORDER_PROC.PAT_ID</patientSelectSqlFragment>
+          <patientJoinSqlFragment>
+            INNER JOIN ORDER_PROC ON ORDER_RESULTS.ORDER_PROC_ID = ORDER_PROC.ORDER_PROC_ID
+          </patientJoinSqlFragment>
+        </connectionTable>
+      </connectionTables>
+    </connection>
+  </connections>
+</aahri>
