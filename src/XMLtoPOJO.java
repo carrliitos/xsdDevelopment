@@ -56,6 +56,31 @@ public class ReadFiles{
 		MetaTables metaTables = mapper.readValue(getXMLFiles("data"), MetaTables.class);
 		System.out.println(metaTables);
 	}
+	
+	public static InputStream getXMLsFromResource(String folder) throws URISyntaxException, IOException{
+		ClassLoader classLoader = ReadFiles.class.getClassLoader();
+		URL resource = classLoader.getResource(folder);
+
+		return (InputStream) Files.walk(Paths.get(Objects.requireNonNull(resource).toURI()))
+				.filter(Files :: isRegularFile)
+				.map(Path :: toFile)
+				.collect(toList());
+	}
+
+	public static String getXMLs(String data) throws IOException{
+		mapper = new XmlMapper();
+		metaTables = mapper.readValue(data.getBytes(), MetaTables.class);
+
+		System.out.println("POJOs " + metaTables);
+		return "";
+	}
+
+	public static void marshal() throws IOException, URISyntaxException{
+		XmlMapper xmlMapper = new XmlMapper();
+		MetaTables metaTables = xmlMapper.readValue(getXMLsFromResource("data"), MetaTables.class);
+		System.out.println("Metatable = " + metaTables);
+		System.out.println("Mapper = " + xmlMapper);
+	}
 
 	public static void main(String[] args){
 //		ReadFiles app = new ReadFiles();
