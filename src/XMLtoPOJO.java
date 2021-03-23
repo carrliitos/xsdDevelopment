@@ -81,6 +81,17 @@ public class ReadFiles{
 		System.out.println("Metatable = " + metaTables);
 		System.out.println("Mapper = " + xmlMapper);
 	}
+	
+	public static <T> T xml2Pojo(String xmlStr, Class<T> cls) {
+		T pojo = null;
+
+		try {
+			pojo = xmlMapper.readValue(xmlStr, cls);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return pojo;
+	}
 
 	public static void main(String[] args){
 //		ReadFiles app = new ReadFiles();
